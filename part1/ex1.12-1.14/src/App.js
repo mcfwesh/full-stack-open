@@ -49,6 +49,7 @@ const App = () => {
       <br />
       <h1>Anecdotes with most votes</h1>
       <p>{anecdotes[getMaxVote()]}</p>
+      <p>has {votes[selected]}</p>
     </div>
   );
 };
