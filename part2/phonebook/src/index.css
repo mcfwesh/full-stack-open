@@ -1,0 +1,10 @@
+.info{
+    border: 5px solid;
+    color: green;
+    background-color: aliceblue;
+    font-weight: 900;
+    font-size: 1.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+}

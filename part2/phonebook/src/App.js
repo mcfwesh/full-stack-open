@@ -3,27 +3,69 @@ import AddNew from "./AddNew";
 import Persons from "./Persons";
 import Search from "./Search";
 import axios from "axios";
+import { getAll, create, deleteOne, updateOne } from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState(null);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [queryString, setQueryString] = useState("");
+  const [info, setInfo] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      console.log(response.data);
-      setPersons(response.data);
-    });
+    getAll().then((initialPersons) => setPersons(initialPersons));
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    persons?.find((p) => p.name === newName)
-      ? alert(`${newName} is already added to phonebook`)
-      : setPersons([...persons, { name: newName, number: newNumber }]);
-    setNewName("");
-    setNewNumber("");
+    const isExisting = persons?.find((p) => p.name === newName);
+    const newPerson = { name: newName, number: newNumber };
+    if (isExisting) {
+      const { id } = isExisting;
+      updateOne(id, newPerson)
+        .then((updatedPerson) => {
+          if (
+            window.confirm(
+              `${newName} is already added to phonebook, replace the old number with a new one?`
+            )
+          ) {
+            setPersons(persons.map((p) => (p.id !== id ? p : newPerson)));
+
+            setInfo(`${newName}'s phone number has been updated`);
+
+            setNewName("");
+            setNewNumber("");
+          }
+        })
+        .catch(() => {
+          setInfo(
+            `Information of ${newName} has already been removed from server! `
+          );
+          setPersons(persons.filter((p) => p.id !== id));
+        });
+    } else {
+      create(newPerson).then((newPerson) =>
+        setPersons([...persons, newPerson])
+      );
+
+      setInfo(`${newPerson.name}'s phone number has been added`);
+
+      setNewName("");
+      setNewNumber("");
+    }
+    setTimeout(() => {
+      setInfo("");
+    }, 3000);
+  };
+
+  const handleDeletePerson = (id) => {
+    deleteOne(id).then((response) => console.log(response));
+    const filteredPersons = persons?.filter((p) => p.id !== id);
+    const toBeDeleted = persons?.filter((p) => p.id === id);
+
+    if (window.confirm(`Delete ${toBeDeleted[0].name}?`)) {
+      setPersons(filteredPersons);
+    }
   };
 
   const handleSearch = (e) => {
@@ -36,6 +78,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      {info && <div className="info">{info}</div>}
       <Search queryString={queryString} handleSearch={handleSearch} />
       <AddNew
         newName={newName}
@@ -44,7 +87,11 @@ const App = () => {
         handleNumber={handleNumber}
         handleName={handleName}
       />
-      <Persons queryString={queryString} persons={persons} />
+      <Persons
+        queryString={queryString}
+        persons={persons}
+        handleDeletePerson={handleDeletePerson}
+      />
     </div>
   );
 };
