@@ -1,0 +1,11 @@
+html body{
+    margin: 0 auto;
+    height: 100%;
+}
+
+.app{
+    /* margin: auto; */
+    max-width: 200px;
+    margin: auto;
+   
+}
