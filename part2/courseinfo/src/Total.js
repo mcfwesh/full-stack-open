@@ -1,9 +1,8 @@
-const Total = ({ parts }) => {
+const Total = ({ course }) => {
   return (
     <>
       <p>
-        Number of exercises{" "}
-        {parts[0].exercises + parts[1].exercises + parts[2].exercises}
+        Number of exercises {course.parts.reduce((a, b) => a + b.exercises, 0)}
       </p>
     </>
   );
