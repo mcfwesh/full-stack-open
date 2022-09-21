@@ -62,7 +62,7 @@ const App = () => {
       create(newPerson)
         .then((newPerson) => setPersons([...persons, newPerson]))
         .catch((error) => {
-          console.log(error);
+          setInfo(error.response.data.error);
         });
 
       setInfo(`${newPerson.name}'s phone number has been added`);
