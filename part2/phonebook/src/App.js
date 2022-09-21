@@ -18,9 +18,15 @@ const App = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const isExisting = persons?.find((p) => p.name === newName);
+    const isExisting = persons?.find(
+      (p) => p.name.toLowerCase() === newName.toLowerCase()
+    );
     const newPerson = { name: newName, number: newNumber };
-    if (isExisting) {
+    if (!newName) {
+      setInfo(`A name must be included for the number, ${newNumber}!`);
+    } else if (!newNumber) {
+      setInfo(`A number must be included to update ${newName}'s contact!`);
+    } else if (isExisting) {
       const { id } = isExisting;
       updateOne(id, newPerson)
         .then((updatedPerson) => {
@@ -37,16 +43,27 @@ const App = () => {
             setNewNumber("");
           }
         })
-        .catch(() => {
-          setInfo(
-            `Information of ${newName} has already been removed from server! `
-          );
-          setPersons(persons.filter((p) => p.id !== id));
+        .catch((error) => {
+          console.log(error);
+          if (error.request.status === 401) {
+            setInfo(`A name must be included for the number, ${newNumber}!`);
+          } else if (error.request.status === 402) {
+            setInfo(
+              `A number must be included to update ${newName}'s contact!`
+            );
+          } else {
+            setInfo(
+              `Information of ${newName} has already been removed from server! `
+            );
+            setPersons(persons.filter((p) => p.id !== id));
+          }
         });
     } else {
-      create(newPerson).then((newPerson) =>
-        setPersons([...persons, newPerson])
-      );
+      create(newPerson)
+        .then((newPerson) => setPersons([...persons, newPerson]))
+        .catch((error) => {
+          console.log(error);
+        });
 
       setInfo(`${newPerson.name}'s phone number has been added`);
 
