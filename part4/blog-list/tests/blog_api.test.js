@@ -141,7 +141,6 @@ describe("deletion of a blog", () => {
     const blogsAtStart = await helpers.blogsInDb();
     const userDb = await helpers.usersInDb();
     const oneBlog = blogsAtStart.filter((blog) => blog.user)[0];
-    console.log(blogsAtStart, userDb[0].id);
     await api
       .delete(`/api/blogs/${oneBlog.id}`)
       .set("Authorization", `bearer ${token}`)

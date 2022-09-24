@@ -87,7 +87,6 @@ describe("favorite blog", () => {
   };
   test("which blog has most likes", () => {
     const result = favoriteBlog(blogs);
-    console.log(result);
     expect(result).toEqual(favoriteOneBlog);
   });
 });
@@ -99,7 +98,6 @@ describe("most blogs", () => {
   };
   test("which author has the most blogs, and how many blogs", () => {
     const result = mostBlogs(blogs);
-    console.log(result);
     expect(result).toEqual(mostBlogsObject);
   });
 });
@@ -111,7 +109,6 @@ describe("most likes", () => {
   };
   test("which author has the most likes, and how many likes", () => {
     const result = mostLikes(blogs);
-    console.log(result);
     expect(result).toEqual(mostLikesObject);
   });
 });

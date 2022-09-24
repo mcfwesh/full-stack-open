@@ -33,7 +33,6 @@ blogsRouter.delete(
 
     const decodeJwt = jwt.verify(request.token, process.env.SECRET);
     const userTokenId = decodeJwt.id;
-    console.log(blog.user.toString() === userTokenId);
 
     if (!(blog.user.toString() === userTokenId)) {
       return response.status(401).json({ error: "token missing or invalid" });
