@@ -16,9 +16,9 @@ blogsRouter.post("/", middlewares.userExtractor, async (request, response) => {
     return response.status(401).json({ error: "token missing or invalid" });
   }
   const blog = new Blog({ ...request.body, user: userToken.id });
-  const user = await BlogUser.findById(request.body.user);
+  const user = await BlogUser.findOne({ username: userToken.username });
   const result = await blog.save();
-
+  console.log(user, "user");
   user.blog = user.blog.concat(result._id);
   await user.save();
 
