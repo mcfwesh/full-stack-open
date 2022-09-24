@@ -10,13 +10,13 @@ blogsRouter.get("/", async (request, response) => {
 });
 
 blogsRouter.post("/", middlewares.userExtractor, async (request, response) => {
-  const blog = new Blog(request.body);
-  const user = await BlogUser.findById(request.body.user);
+  const userToken = request.user;
 
-  const decodeJwt = jwt.verify(request.token, process.env.SECRET);
   if (!request.user) {
     return response.status(401).json({ error: "token missing or invalid" });
   }
+  const blog = new Blog({ ...request.body, user: userToken.id });
+  const user = await BlogUser.findById(request.body.user);
   const result = await blog.save();
 
   user.blog = user.blog.concat(result._id);
@@ -30,11 +30,11 @@ blogsRouter.delete(
   middlewares.userExtractor,
   async (request, response) => {
     const blog = await Blog.findById({ _id: request.params.id });
+    if (!blog) {
+      return response;
+    }
 
-    const decodeJwt = jwt.verify(request.token, process.env.SECRET);
-    const userTokenId = decodeJwt.id;
-
-    if (!(blog.user.toString() === userTokenId)) {
+    if (!(blog.user.toString() === request.user.id)) {
       return response.status(401).json({ error: "token missing or invalid" });
     }
     await Blog.findByIdAndRemove(request.params.id);
