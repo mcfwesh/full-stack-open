@@ -79,7 +79,7 @@ describe("Blog app", function () {
         cy.login({ username: "root-1", password: "example" });
         cy.contains("Show").click();
         cy.contains("Delete").click();
-        cy.on("uncaught:exception", (err, runnable) => {
+        cy.on("uncaught:exception", (err) => {
           expect(err.message).to.include("Request failed with status code 401");
           done();
           return false;
