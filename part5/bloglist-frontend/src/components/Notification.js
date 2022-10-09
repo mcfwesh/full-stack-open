@@ -6,8 +6,8 @@ const Notification = () => {
   console.log(notification);
   return (
     notification && (
-      <Alert severity="info" className="error">
-        {notification}
+      <Alert severity={notification.type} className="error">
+        {notification.info}
       </Alert>
     )
   );

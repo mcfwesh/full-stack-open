@@ -23,37 +23,37 @@ const AddNewBlog = () => {
   } = useField("title", "text");
   const { value: url, reset: resetUrl, ...restUrl } = useField("title", "text");
 
-  const createBlog = (blog) => async (e) => {
-    e.preventDefault();
+  const createBlog = async (blog) => {
     try {
       blogRef.current.handleVisibility();
       await dispatch(createBlogAction(blog));
       dispatch(
-        newNotification(
-          `The blog titled ${title} by ${author} has been created`
-        )
+        newNotification({
+          info: `The blog titled ${title} by ${author} has been created`,
+          type: "success",
+        })
       );
-      resetAuthor();
-      resetTitle();
-      resetUrl();
     } catch (error) {
-      dispatch(newNotification("Blog cannot be created"));
+      dispatch(
+        newNotification({
+          info: "Blog cannot be created",
+          type: "error",
+        })
+      );
     }
   };
 
-  // const handleAddNewBlogs = (e) => {
-  //   e.preventDefault();
-  //   createBlog({ title, url, author });
-  //   resetAuthor();
-  //   resetTitle();
-  //   resetUrl();
-  // };
-
-  console.log(author, title, url);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    createBlog({ title, url, author });
+    resetAuthor();
+    resetTitle();
+    resetUrl();
+  };
 
   return (
     <Toggle ref={blogRef} buttonLabel="Add new blog">
-      <form onSubmit={createBlog({ title, url, author })}>
+      <form onSubmit={handleSubmit}>
         <Box>
           <Box mb={1}>
             <TextField

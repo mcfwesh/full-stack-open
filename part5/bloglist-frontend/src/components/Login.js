@@ -1,6 +1,7 @@
 import useField from "../hooks/useField";
 import { useDispatch } from "react-redux";
 import { loginAction } from "../reducers/loginReducer";
+import { newNotification } from "../reducers/notificationReducer";
 import Toggle from "./Toggle";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -22,7 +23,13 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     const user = { username, password };
-    dispatch(loginAction(user));
+    try {
+      dispatch(loginAction(user));
+    } catch (error) {
+      dispatch(
+        newNotification({ info: "Wrong username or password", type: "error" })
+      );
+    }
     resetUsername();
     resetPassword();
   };

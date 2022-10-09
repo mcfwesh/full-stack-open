@@ -29,10 +29,8 @@ const blogSlice = createSlice({
 export const { newBlog, setBlogs, updateBlog, removeBlog } = blogSlice.actions;
 
 export const createBlogAction = (blog) => {
-  console.log(blog);
   return async (dispatch) => {
     const response = await blogService.create(blog);
-    console.log(response);
     dispatch(newBlog(response));
   };
 };
