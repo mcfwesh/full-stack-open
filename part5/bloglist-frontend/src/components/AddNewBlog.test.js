@@ -6,9 +6,9 @@ import AddNewBlog from "./AddNewBlog";
 
 test("calls event handler with the right details", async () => {
   const createBlog = jest.fn();
-  const errorCreatingBlog = jest.fn();
+  const getNotification = jest.fn();
   render(
-    <AddNewBlog createBlog={createBlog} errorCreatingBlog={errorCreatingBlog} />
+    <AddNewBlog createBlog={createBlog} getNotification={getNotification} />
   ).container;
 
   const title = screen.getByPlaceholderText("Add title");

@@ -1,47 +1,59 @@
-import PropTypes from "prop-types";
+import useField from "../hooks/useField";
+import { useDispatch } from "react-redux";
+import { loginAction } from "../reducers/loginReducer";
+import Toggle from "./Toggle";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
-const Login = ({
-  handleLogin,
-  username,
-  password,
-  setPassword,
-  setUsername,
-}) => {
+const Login = () => {
+  const dispatch = useDispatch();
+  const {
+    value: username,
+    reset: resetUsername,
+    ...otherUsername
+  } = useField("username", "text");
+  const {
+    value: password,
+    reset: resetPassword,
+    ...otherPassword
+  } = useField("password", "password");
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const user = { username, password };
+    dispatch(loginAction(user));
+    resetUsername();
+    resetPassword();
+  };
+
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        Username
-        <input
-          type="text"
-          name="username"
-          value={username}
-          id="username"
-          onChange={(e) => setUsername(e.target.value)}
+    <Toggle buttonLabel="Login">
+      <form onSubmit={handleLogin}>
+        <TextField
+          sx={{ display: "block", mb: 1 }}
+          label="Username"
+          size="small"
+          {...otherUsername}
         />
-      </div>
-      <div>
-        Password
-        <input
-          type="password"
-          name="password"
-          value={password}
-          id="password"
-          onChange={(e) => setPassword(e.target.value)}
+        <TextField
+          sx={{ display: "block", mb: 1 }}
+          label="Password"
+          size="small"
+          {...otherPassword}
         />
-      </div>
-      <button id="login" type="submit">
-        login
-      </button>
-    </form>
+        <Button
+          variant="contained"
+          size="small"
+          color="success"
+          id="login"
+          type="submit"
+        >
+          login
+        </Button>
+      </form>
+    </Toggle>
   );
-};
-
-Login.propTypes = {
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
-  setPassword: PropTypes.func.isRequired,
-  setUsername: PropTypes.func.isRequired,
-  handleLogin: PropTypes.func.isRequired,
 };
 
 export default Login;
