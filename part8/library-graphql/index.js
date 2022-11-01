@@ -11,7 +11,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const User = require("./models/user");
 const typeDefs = require("./schema");
-const resolvers = require("./reslovers");
+const resolvers = require("./resolvers");
 
 const MONGO_URI =
   "mongodb+srv://mcfwesh:mcfwesh@cluster0.glqig1z.mongodb.net/libraryDB?retryWrites=true&w=majority";

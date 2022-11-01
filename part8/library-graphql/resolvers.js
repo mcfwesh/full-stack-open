@@ -42,24 +42,22 @@ const resolvers = {
         throw new UserInputError(error.message);
       }
     },
-    allAuthors: async () => {
+    allAuthors: async (root) => {
       try {
-        const books = await Book.find({}).populate("author");
         const authors = await Author.find({});
+        return authors;
 
-        console.log("book query");
-        console.log("authors query");
+        //initial way of solving n+1 problem
+        // const booksByAuthor = _.groupBy(books, (book) => book.author.name);
+        // const authorByNames = _.groupBy(authors, (author) => author.name);
 
-        const booksByAuthor = _.groupBy(books, (book) => book.author.name);
-        const authorByNames = _.groupBy(authors, (author) => author.name);
-
-        return Object.keys(booksByAuthor).map((author) => {
-          return {
-            name: author,
-            born: authorByNames[author][0].born || null,
-            bookCount: booksByAuthor[author].length,
-          };
-        });
+        // return Object.keys(booksByAuthor).map((author) => {
+        //   return {
+        //     name: author,
+        //     born: authorByNames[author][0].born || null,
+        //     bookCount: booksByAuthor[author].length,
+        //   };
+        // });
       } catch (error) {}
     },
     me: (root, args, context) => context.currentUser,
@@ -117,6 +115,15 @@ const resolvers = {
         const token = jwt.sign(userForToken, "SECRET");
         return { value: token };
       } catch (error) {}
+    },
+  },
+  Author: {
+    bookCount: async (root) => {
+      const books = await Book.find();
+      const bookCount = books.filter(
+        (book) => String(book.author) === String(root.id)
+      );
+      return bookCount.length;
     },
   },
   Subscription: {
